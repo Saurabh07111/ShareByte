@@ -3,7 +3,6 @@ Spring Boot backend for ShareByte – a real-time food redistribution platform c
 
 # ShareByte Backend
 
-ShareByte is a real-time food redistribution platform that connects restaurants with NGOs, orphanages, old-age homes, and ashrams to reduce food waste.
 
 ## Tech Stack
 - Java 17
