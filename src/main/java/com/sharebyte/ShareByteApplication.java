@@ -8,6 +8,6 @@ public class ShareByteApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShareByteApplication.class, args);
-		System.out.println("Hello");
+//		System.out.println("Hello");
 	}
 }

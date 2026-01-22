@@ -20,3 +20,14 @@ com.sharebyte
  ├── dto
  ├── config
  └── ShareByteApplication.java
+
+
+## Features Implemented
+- User Registration
+- Email uniqueness validation
+- Password encryption
+- DTO-based validation
+- Global exception handling
+
+## API Endpoints
+POST /api/users/register
