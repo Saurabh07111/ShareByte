@@ -31,3 +31,5 @@ com.sharebyte
 
 ## API Endpoints
 POST /api/users/register
+POST /api/users/login
+GET /api/auth/verify

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +11,25 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(AccountNotActiveException.class)
+	public ResponseEntity<Map<String, Object>> handleInactiveAccount(AccountNotActiveException ex) {
+			Map<String , Object> map = new HashMap<>();
+			map.put("status", HttpStatus.FORBIDDEN.value());
+			map.put("message", ex.getMessage());
+			
+			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler(UserNotFoundException.class)
+	
+	public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("status", HttpStatus.UNAUTHORIZED.value());
+		map.put("message", ex.getMessage());
+		
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.UNAUTHORIZED);
+	}
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, Object>> handleValidationException (MethodArgumentNotValidException exception){
 		Map<String, String> fieldErrors = new HashMap<>();
