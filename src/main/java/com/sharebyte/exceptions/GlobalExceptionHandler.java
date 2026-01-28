@@ -12,6 +12,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<Map<String, Object>> handleInvalidVerification(InvalidTokenException ex) {
+		Map<String , Object> map = new HashMap<>();
+		map.put("status", HttpStatus.GONE.value());
+		map.put("message", ex.getMessage());
+		
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.GONE);
+	}
+	
 	@ExceptionHandler(AccountNotActiveException.class)
 	public ResponseEntity<Map<String, Object>> handleInactiveAccount(AccountNotActiveException ex) {
 			Map<String , Object> map = new HashMap<>();
