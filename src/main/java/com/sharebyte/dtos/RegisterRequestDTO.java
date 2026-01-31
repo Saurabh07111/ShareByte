@@ -1,5 +1,7 @@
 package com.sharebyte.dtos;
 
+import com.sharebyte.enums.Role;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

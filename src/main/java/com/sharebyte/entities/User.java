@@ -1,5 +1,6 @@
 package com.sharebyte.entities;
 
+import com.sharebyte.enums.Role;
 import com.sharebyte.enums.UserStatus;
 
 import jakarta.persistence.Column;
@@ -10,8 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-
 
 
 @Entity
@@ -30,23 +29,26 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private String role;
+	private Role role;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
 	private UserStatus status;
 	
+	@Column
+	private String profileImage;
 	
 	
 
-	public User(Long id, String name, String email, String password, String role, UserStatus status) {
+	public User(Long id, String name, String email, String password,  UserStatus status) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.role = role;
+
 		this.status = status;
 	}
 	public User() {
@@ -85,13 +87,7 @@ public class User {
 		this.password = password;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
+	
 
 	public UserStatus getStatus() {
 		return status;
@@ -99,6 +95,18 @@ public class User {
 
 	public void setStatus(UserStatus status) {
 		this.status = status;
+	}
+	public Role getRole() {
+		return role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
+	}
+	public String getProfileImage() {
+		return profileImage;
+	}
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 	
 	

@@ -33,7 +33,8 @@ public class SecurityConfig {
     				auth->auth.requestMatchers(
     						"/auth/login",
     						"/auth/register",
-    						"/auth/verify").permitAll()
+    						"/auth/verify",
+    						"/file/image/*").permitAll()
     				.anyRequest().authenticated()
     		).addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
     

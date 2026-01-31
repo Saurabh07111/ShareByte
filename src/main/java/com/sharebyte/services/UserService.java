@@ -1,22 +1,32 @@
 package com.sharebyte.services;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sharebyte.dtos.LoginRequestDTO;
 import com.sharebyte.dtos.LoginResponseDTO;
 import com.sharebyte.dtos.RegisterRequestDTO;
 import com.sharebyte.dtos.RegisterResponseDTO;
-
+import com.sharebyte.dtos.UpdateProfileDTO;
+import com.sharebyte.dtos.UserProfileResponseDTO;
 import com.sharebyte.entities.User;
 import com.sharebyte.entities.VerificationToken;
+import com.sharebyte.enums.Role;
 import com.sharebyte.enums.UserStatus;
 
 import com.sharebyte.exceptions.AccountNotActiveException;
@@ -46,6 +56,70 @@ public class UserService {
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
 	
+	public void updateProfile(String email, UpdateProfileDTO dto, MultipartFile profileImage) {
+		User user = userRepo.findByEmail(email);
+		
+		if(user==null) {
+			throw new UserNotFoundException("User not found");
+		} 
+		
+		if(dto!=null && dto.getName()!=null) {
+			user.setName(dto.getName());
+		}
+		
+		if(profileImage!=null && !profileImage.isEmpty()) {
+			
+			String fileName = profileImage.getOriginalFilename();
+			String fname = user.getId() + "_profile" + fileName.substring(fileName.lastIndexOf('.'));
+			String profile  = saveFile(profileImage,  fname);
+			
+			user.setProfileImage(fname);
+		}
+		
+		userRepo.save(user);
+		
+		
+	}
+
+	
+	public UserProfileResponseDTO getMyProfile() {
+		String email = SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getName();
+		
+		User user = userRepo.findByEmail(email);
+		
+		if(user == null) {
+			throw new UserNotFoundException("User not found");
+		}
+		
+		
+		return mapToprofileDto(user);
+	}
+
+	
+	public  UserProfileResponseDTO getUserProfile(Long userId) {
+		
+		User user = userRepo.findById(userId).orElseThrow(null);
+		
+		if(user==null) {
+			throw new UserNotFoundException("User not found");
+		}
+		
+		return mapToprofileDto(user);
+	}
+	
+	public UserProfileResponseDTO mapToprofileDto(User user) {
+		UserProfileResponseDTO dto = new UserProfileResponseDTO();
+		dto.setEmail(user.getEmail());
+		dto.setId(user.getId());
+		dto.setName(user.getName());
+		dto.setRole(user.getRole().name());
+		dto.setImage(user.getProfileImage());
+		
+		return dto;
+		
+	}
 	
 	public String verifyUser(String token) {
 		Optional<VerificationToken> op  = verificationRepo.findByToken(token);
@@ -107,7 +181,7 @@ public class UserService {
 		user.setName(request.getName());
 		user.setEmail(request.getEmail());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
-		user.setRole(request.getRole());
+		user.setRole(Role.valueOf(request.getRole()));
 //		user.setPassword(request.getPassword());
 		
 		
@@ -142,5 +216,50 @@ public class UserService {
 	public User getUserByEmail(String email) {
 		return userRepo.findByEmail(email);
 	}
+
+	public void uploadImage(MultipartFile image) {
+		String email = SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getName();
+		
+		User user = userRepo.findByEmail(email);
+
+		if(user == null) {
+			throw new UserNotFoundException("User does not exists");
+		}
+		
+		String fileName = image.getOriginalFilename();
+		String fname = user.getId() + "_profile" + fileName.substring(fileName.lastIndexOf('.'));
+		String profile  = saveFile(image,  fname);
+		
+		user.setProfileImage(fname);
+		
+		userRepo.save(user);
+		
+	}
+	
+	public String saveFile(MultipartFile file, String fileName)  {
+		
+		
+		Path uploadPath = Paths.get("uploads/profile");
+		Path filePath = uploadPath.resolve(fileName);
+		try {
+			Files.createDirectories(uploadPath);
+			
+			Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+			
+			
+			
+		} catch (IOException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		
+		return filePath.toString();
+	}
+
+
+	
 	
 }

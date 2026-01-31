@@ -28,8 +28,19 @@ com.sharebyte
 - Password encryption
 - DTO-based validation
 - Global exception handling
+- Email Verification
+- Jwt Authentication
+- Profile image upload
+- User profile retrieval
+
 
 ## API Endpoints
-POST /api/users/register
-POST /api/users/login
-GET /api/auth/verify
+POST /auth/register
+POST /auth/login
+GET /auth/verify
+
+POST /user/uppload-image
+GET /user/me
+GET /user/{user-id}/profile
+Get /file/image
+
