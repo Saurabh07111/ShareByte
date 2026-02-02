@@ -71,7 +71,8 @@ public class UserService {
 			
 			String fileName = profileImage.getOriginalFilename();
 			String fname = user.getId() + "_profile" + fileName.substring(fileName.lastIndexOf('.'));
-			String profile  = saveFile(profileImage,  fname);
+			
+			saveFile(profileImage,  fname);
 			
 			user.setProfileImage(fname);
 		}
@@ -133,7 +134,7 @@ public class UserService {
 		}
 		
 		User user = verificationToken.getUser();
-		user.setStatus(UserStatus.ACITVE);
+		user.setStatus(UserStatus.ACTIVE);
 		userRepo.save(user);
 		verificationRepo.delete(verificationToken);
 		return "Account Varified";
@@ -155,7 +156,7 @@ public class UserService {
 //			throw new UserNotFoundException("Invalid credentials");
 //		}
 		
-		if(user.getStatus() != UserStatus.ACITVE) {
+		if(user.getStatus() != UserStatus.ACTIVE) {
 			throw new AccountNotActiveException("Please varify your email before using");
 		}
 		
@@ -185,7 +186,7 @@ public class UserService {
 //		user.setPassword(request.getPassword());
 		
 		
-		user.setStatus(UserStatus.PANDING_VARIFICATION);
+		user.setStatus(UserStatus.ACTIVE);
 		
 		user = userRepo.save(user);
 		
@@ -212,11 +213,6 @@ public class UserService {
 	}
 	
 
-	
-	public User getUserByEmail(String email) {
-		return userRepo.findByEmail(email);
-	}
-
 	public void uploadImage(MultipartFile image) {
 		String email = SecurityContextHolder.getContext()
 				.getAuthentication()
@@ -230,7 +226,7 @@ public class UserService {
 		
 		String fileName = image.getOriginalFilename();
 		String fname = user.getId() + "_profile" + fileName.substring(fileName.lastIndexOf('.'));
-		String profile  = saveFile(image,  fname);
+		 saveFile(image,  fname);
 		
 		user.setProfileImage(fname);
 		
@@ -238,9 +234,7 @@ public class UserService {
 		
 	}
 	
-	public String saveFile(MultipartFile file, String fileName)  {
-		
-		
+	public void saveFile(MultipartFile file, String fileName)  {
 		Path uploadPath = Paths.get("uploads/profile");
 		Path filePath = uploadPath.resolve(fileName);
 		try {
@@ -249,17 +243,13 @@ public class UserService {
 			Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 			
 			
-			
 		} catch (IOException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
 		
 		
-		return filePath.toString();
 	}
-
-
 	
 	
 }

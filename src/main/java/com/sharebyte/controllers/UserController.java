@@ -32,6 +32,9 @@ public class UserController {
 			@RequestPart(required = false) UpdateProfileDTO dto,
 			@RequestPart(required = false) MultipartFile profileImage
 			, Authentication authentication) {
+	
+		System.out.println(dto);
+		System.out.println(profileImage);
 		
 		userService.updateProfile(authentication.getName(), dto, profileImage);
 		return ResponseEntity.ok("Profile updated successfully");

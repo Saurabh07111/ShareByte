@@ -33,6 +33,8 @@ com.sharebyte
 - Profile image upload
 - User profile retrieval
 
+- Admin User Listing 
+
 
 ## API Endpoints
 POST /auth/register
@@ -42,5 +44,10 @@ GET /auth/verify
 POST /user/uppload-image
 GET /user/me
 GET /user/{user-id}/profile
-Get /file/image
+GET /file/image
+
+PUT /user/profile
+
+GET /admin/users
+    
 
