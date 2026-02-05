@@ -32,6 +32,7 @@ com.sharebyte
 - Jwt Authentication
 - Profile image upload
 - User profile retrieval
+- Change Password
 
 - Admin User Listing 
 
@@ -47,6 +48,7 @@ GET /user/{user-id}/profile
 GET /file/image
 
 PUT /user/profile
+PUT /user/change-password
 
 GET /admin/users
     

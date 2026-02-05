@@ -1,16 +1,39 @@
 package com.sharebyte.exceptions;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex){
+		Map<String , Object> map = new HashMap<>();
+		map.put("status", HttpStatus.UNAUTHORIZED.value());
+		map.put("message", ex.getMessage());
+//		System.out.println(ex);
+		
+		
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@ExceptionHandler(BadRequestException.class )
+	public ResponseEntity<Map<String, Object>> handleBadRequest(BadRequestException ex){
+		Map<String , Object> map = new HashMap<>();
+		map.put("status", HttpStatus.BAD_REQUEST.value());
+		map.put("message", ex.getMessage());
+		
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.GONE);
+	}
 	
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<Map<String, Object>> handleInvalidVerification(InvalidTokenException ex) {

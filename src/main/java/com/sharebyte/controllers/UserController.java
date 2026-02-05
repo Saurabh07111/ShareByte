@@ -1,18 +1,24 @@
 package com.sharebyte.controllers;
 
+import com.sharebyte.dtos.ChangePasswordRequestDTO;
+import com.sharebyte.dtos.ForgotPasswordRequestDTO;
 import com.sharebyte.dtos.UpdateProfileDTO;
 import com.sharebyte.dtos.UserProfileResponseDTO;
 import com.sharebyte.repositories.UserRepository;
 import com.sharebyte.services.UserService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,6 +32,24 @@ public class UserController {
 
 	@Autowired
    private UserService userService;
+	
+	
+	@PostMapping("/forgot-password")
+	public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequestDTO dto) {
+		userService.forgotPassword(dto);
+		return ResponseEntity.ok("Check email and reset password");
+	}
+	
+	@PutMapping("/change-password")
+	public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO) {
+		boolean flag = userService.changePassword(changePasswordRequestDTO);
+		
+		if(flag) {
+			return ResponseEntity.ok("Password changed successfully");			
+		} else {
+			return new ResponseEntity<String>("Password is incorrect.", HttpStatus.BAD_REQUEST);
+		}
+	}
 	
 	@PutMapping("/profile")
 	public ResponseEntity<?> updateProfile(

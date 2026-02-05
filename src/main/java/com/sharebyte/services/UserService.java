@@ -12,12 +12,15 @@ import java.util.UUID;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sharebyte.dtos.ChangePasswordRequestDTO;
+import com.sharebyte.dtos.ForgotPasswordRequestDTO;
 import com.sharebyte.dtos.LoginRequestDTO;
 import com.sharebyte.dtos.LoginResponseDTO;
 import com.sharebyte.dtos.RegisterRequestDTO;
@@ -37,6 +40,8 @@ import com.sharebyte.exceptions.UserNotFoundException;
 import com.sharebyte.repositories.UserRepository;
 import com.sharebyte.repositories.VerificationTokenRepository;
 import com.sharebyte.security.JwtUtil;
+
+import jakarta.validation.Valid;
 
 @Service
 public class UserService {
@@ -160,6 +165,7 @@ public class UserService {
 			throw new AccountNotActiveException("Please varify your email before using");
 		}
 		
+	
 		String token = jwtUtil.generateToken(user.getEmail());
 				
 		LoginResponseDTO response = new LoginResponseDTO();
@@ -250,6 +256,32 @@ public class UserService {
 		
 		
 	}
+
+
+	public boolean changePassword(ChangePasswordRequestDTO request) {
+		// TODO Auto-generated method stub
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userRepo.findByEmail(email);
+		
+		if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+			user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+			userRepo.save(user);
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+
+
+	public void forgotPassword(ForgotPasswordRequestDTO request) {
+		// TODO Auto-generated method stub
+		
+		
+		
+	}
+
+
 	
 	
 }

@@ -4,5 +4,6 @@ public enum UserStatus {
 	PANDING_VARIFICATION,
 	ACTIVE,
 	SUSPEND,
-	DELETED
+	DELETED,
+	BLOCKED
 }
